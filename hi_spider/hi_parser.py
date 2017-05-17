@@ -15,18 +15,27 @@ class Parse(object):
         sub_urls = set()
         img_urls = set()
         # <a href="/p/12421/pu/1" target="_blank">李毅吧丧尸语录，Top50 。15岁以下禁入</a>
-        links = soup.find_all('a', href=re.compile(r"/p/\S+/pu/"))
-        for link in links:
-            new_url = link['href']
-            new_full_url = urlparse.urljoin(page_url, new_url)
-            sub_urls.add(new_full_url)
-        # < img id = "img" src = "xxx.jpg?kilobug" > 处理 imgs ?kilobug --> ''
-        images = soup.find_all('img')
-        for img in images:
-            url = img['src']
-            url.replace('?kilobug', '')
-            img_urls.add(url)
-            # print 'img: %s' % url
+        lis = soup.find('li', class_='next')
+        if lis is None:
+            print 'no data'
+            sub_urls.add('')
+        else:
+            link = lis.find('a', href=re.compile(r"/p/\S+/pu/"))
+            sub_urls.add(urlparse.urljoin(page_url, link['href']))
+        divs = soup.find_all('div', class_='content round')
+        for div in divs:
+            # links = div.find_all('a', href=re.compile(r"/p/\S+/pu/"))
+            # for link in links:
+            #     new_url = link['href']
+            #     new_full_url = urlparse.urljoin(page_url, new_url)
+            #     sub_urls.add(new_full_url)
+            # < img id = "img" src = "xxx.jpg?kilobug" > 处理 imgs ?kilobug --> ''
+            images = div.find_all('img')
+            for img in images:
+                url = img['src']
+                url.replace('?kilobug', '')
+                img_urls.add(url)
+                # print 'img: %s' % url
         return sub_urls, img_urls
 
     def parseImgUrl(self, content):
