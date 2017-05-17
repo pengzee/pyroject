@@ -17,18 +17,17 @@ class HiMain(object):
         # 下载 root_url 界面
         while self.urls.has_new_url():
             new_url = self.urls.get_new_url()
-            print "new_url: %s: " % new_url
             html_cont = self.downloader.startDownload(new_url)
+            print "new_url: %s" % new_url
             # 遍历 html_cont 中的 sub_urls 和 图片 images
             sub_urls, img_urls = self.parser.startParse(html_cont)
             self.urls.add_new_urls(sub_urls)
-            print "sub_urls: %s: " % sub_urls
             if img_urls is None or len(img_urls) == 0:
                 print 'img_urls is none'
             else:
                 for img in img_urls:
                     images.add(img)
-            if count == 3:
+            if count == 10:
                 break
             count = count + 1
             # 下载 图片 到本地硬盘

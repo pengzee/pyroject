@@ -7,6 +7,7 @@ class UrlManager(object):
         if new_url is None:
             return
         if new_url not in self.new_urls and new_url not in self.old_urls:
+            # print "new_url: %s" % new_url
             self.new_urls.add(new_url)
 
     def add_new_urls(self, new_urls):
@@ -18,6 +19,7 @@ class UrlManager(object):
     def get_new_url(self):
         new_url = self.new_urls.pop()
         self.old_urls.add(new_url)
+        # print "old_urls: %s" % new_url
         return new_url
 
     def has_new_url(self):
