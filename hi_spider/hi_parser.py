@@ -38,19 +38,34 @@ class Parse(object):
                 # print 'img: %s' % url
         return sub_urls, img_urls
 
-    def parseImgUrl(self, content):
+    def parseRootPage(self, content):
         if content is None:
             return
         soup = BeautifulSoup(content, 'html.parser', from_encoding='utf-8')
         sub_urls = set()
-        # <a href="/p/10863/pu/20">20</a> next_page
+        # http://www.369hi.com/category/魔兽世界吧
         links = soup.find_all('a', href=re.compile(r"/p/\S+/pu/"))
         for link in links:
-            new_url = link['href']
-            new_full_url = urlparse.urljoin(page_url, new_url)
-            sub_urls.add(new_full_url)
-        # < img id = "img" src = "xxx.jpg?kilobug" > 处理 imgs ?kilobug --> ''
-        images = soup.find_all('img', id='img')
-        for img in images:
-            img.replace('?kilobug', '')
-        return links, images
+            sub_urls.add(urlparse.urljoin(page_url, link['href']))
+        return sub_urls
+
+
+
+
+
+        # def parseImgUrl(self, content):
+        #     if content is None:
+        #         return
+        #     soup = BeautifulSoup(content, 'html.parser', from_encoding='utf-8')
+        #     sub_urls = set()
+        #     # <a href="/p/10863/pu/20">20</a> next_page
+        #     links = soup.find_all('a', href=re.compile(r"/p/\S+/pu/"))
+        #     for link in links:
+        #         new_url = link['href']
+        #         new_full_url = urlparse.urljoin(page_url, new_url)
+        #         sub_urls.add(new_full_url)
+        #     # < img id = "img" src = "xxx.jpg?kilobug" > 处理 imgs ?kilobug --> ''
+        #     images = soup.find_all('img', id='img')
+        #     for img in images:
+        #         img.replace('?kilobug', '')
+        #     return links, images

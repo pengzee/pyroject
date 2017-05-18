@@ -9,12 +9,22 @@ class HiMain(object):
         self.downloader = hi_downloader.Download()
         self.output = hi_output.OutPut()
 
-    def craw(self, root_url):
+    def crawRoot(self, root_url):
         print 'root_url: %s' % root_url
+        # 遍历 html_cont 中的 item_urls
+        html_cont = self.downloader.startDownload(root_url)
+        item_urls = self.parser.parseRootPage(html_cont)
+        if item_urls is None:
+            print ("category content is None !")
+            return
+        else:
+            self.urls.add_new_urls(item_urls)
+            self.crawPage()
+
+    def crawPage(self):
         # count = 1
         images = set()
-        self.urls.add_new_url(root_url)
-        # 下载 root_url 界面
+        # 下载 page_url 界面
         while self.urls.has_new_url():
             try:
                 new_url = self.urls.get_new_url()
@@ -40,6 +50,7 @@ class HiMain(object):
 
 
 if __name__ == "__main__":
-    root_url = "http://www.369hi.com/p/8328/pu/1"
+    # root_url = "http://www.369hi.com/p/8328/pu/1"
+    root_url = "http://www.369hi.com/category/%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C"
     obj_spider = HiMain()
-    obj_spider.craw(root_url)
+    obj_spider.crawRoot(root_url)
