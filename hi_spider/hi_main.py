@@ -48,9 +48,38 @@ class HiMain(object):
         print "image length: %s" % len(images)
         self.output.startOutput(images)
 
+    def crawSinglePage(self, page_url):
+        # count = 1
+        images = set()
+        self.urls.add_new_url(page_url)
+        # 下载 page_url 界面
+        while self.urls.has_new_url():
+            try:
+                new_url = self.urls.get_new_url()
+                html_cont = self.downloader.startDownload(new_url)
+                print "new_url: %s" % new_url
+                # 遍历 html_cont 中的 sub_urls 和 图片 images
+                sub_urls, img_urls = self.parser.startParse(html_cont)
+                self.urls.add_new_urls(sub_urls)
+                if img_urls is None or len(img_urls) == 0:
+                    print 'img_urls is none'
+                else:
+                    for img in img_urls:
+                        if img.endswith('jpg'):
+                            images.add(img)
+                            # if count == 30:
+                            #     break
+                            # count = count + 1
+            except:
+                print 'failed'
+        # 下载 图片 到本地硬盘
+        print "image length: %s" % len(images)
+        self.output.startOutput(images)
+
 
 if __name__ == "__main__":
-    # root_url = "http://www.369hi.com/p/8328/pu/1"
-    root_url = "http://www.369hi.com/category/%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C"
+    root_url = "http://www.369hi.com/p/17707/pu/1"
     obj_spider = HiMain()
-    obj_spider.crawRoot(root_url)
+    # root_url = "http://www.369hi.com/category/%E9%AD%94%E5%85%BD%E4%B8%96%E7%95%8C"
+    # obj_spider.crawRoot(root_url)
+    obj_spider.crawSinglePage(root_url)
